@@ -7,12 +7,133 @@
         // ALL OF YOUR JAVASCRIPT CODE SHOULD GO HERE. 
         // We have to use window.onload so your JavaScript doesn't execute until the page has loaded and all HTML has been downloaded to your browser
         
+        //Used as testing to make sure I was able to pull correct data.
+        //prompt("Hello" + window.geemails[1].date);
+        
+        //Start of function to create table using data generated from the onload function
+        function tableCreate(){
+        	//Clears content in div when refreshing data
+        	document.getElementById('content').innerHTML = "";
+        	document.getElementById('messageCount').innerHTML = "";
+        	//Location of where to create table, this is the div "Content"
+        	var body = document.getElementById('content');
+        	//Creates table element to be populated
+        	var tbl = document.createElement('table');
+        	//Used for syling table
+        	tbl.style.border = '1px solid black';
+
+        	//Loops through all of the data that is returned in the "onload function"
+        	for(var i = 0; i < window.geemails.length + 1; i++){
+        		//Creates row
+        		var tr = tbl.insertRow();
+        		//Able to populate each cell in row, up to 3.  Used for Date, Sender, Subject
+        		for(var j = 0; j < 3; j++){
+        			//This sets first row, first column cell as "Date"
+        			if(i == 0  && j == 0){
+        				var td = tr.insertCell();
+        				td.appendChild(document.createTextNode('Date'));
+        			//This sets first row, second column cell as "Sender"
+        			}else if(i == 0  && j == 1){
+        				var td = tr.insertCell();
+        				td.appendChild(document.createTextNode('Sender'));
+        			//This sets first row, third column cell as "subject"
+        			}else if(i == 0  && j == 2){
+        				var td = tr.insertCell();
+        				td.appendChild(document.createTextNode('Subject'));
+        			//If it is not the first row, populate data with information from window.geemails
+        			}else{
+        				//This points to the correct location in the data set 
+        				var num = i - 1
+        				//Sets first column to be date information pulled from object
+        				if(j == 0){
+        				var td = tr.insertCell();
+        				td.appendChild(document.createTextNode(window.geemails[num].date));
+        				td.style.border = '1px solid black';
+        				//Sets second column to be sender information pulled from object
+        				}else if(j == 1){
+        				var td = tr.insertCell();
+        				td.appendChild(document.createTextNode(window.geemails[num].sender));
+        				td.style.border = '1px solid black';
+        				
+        				//Sets third column to be subject information pulled from object
+        				}else if(j == 2){
+						var td = tr.insertCell();
+        				td.appendChild(document.createTextNode(window.geemails[num].subject));
+        				td.style.border = '1px solid black';
+        				
+        				}
+        				
+        			}
+        			}
+
+        		}
+        		body.appendChild(tbl);
+        		//After table is generated, show message count
+        		document.getElementById('messageCount').innerHTML = "You have " + window.geemails.length + " messages";
+
+        //Provides on click function to display data from message
+        var table = document.getElementsByTagName("table")[0];
+		var tbody = table.getElementsByTagName("tbody")[0];
+		//Function when clicking on row
+		tbody.onclick = function (e) {
+    	e = e || window.event;
+    	//Container for data to be displayed
+    	var data = [];
+    	//Targets what has been clicked
+    	var target = e.srcElement || e.target;
+    	//Checks target if row
+    	while (target && target.nodeName !== "TR") {
+        	target = target.parentNode;
+    	}
+    	//Uses information for target that has been clicked.  Needs to subtract by 1 to get proper location of information from window.geemails
+    	data.push(window.geemails[target.rowIndex - 1].body);
+    	//Writes data to pop up window
+    	alert(data);
+
+
+
+		};
+
+        }
+        //Generates table using "tableCreate" function
+        tableCreate();
+
+        //Used to create new message, reruns table creator and repopulates with data.
+        function loadNewMessage() {
+        //sets interval for new message generation
+		setInterval(function(){window.geemails.push(getNewMessage());tableCreate();}, 30000);
+
+			
+		}
+        loadNewMessage();
+        
+
+
+
       };
     </script>
 	</head>
 	<body>
-		<div class="container" id="main">
-			Build Me!
+		<div class="container" id="header">
+			<HEADER><b>GEE-Mail<b></HEADER>
+			<div class="container" id="messageCount">
+			</div>
 		</div>
+<p>
+<div>
+		<div class="container" id="content">
+		<div class="container" id="message">
+		</div>
+		</div>
+		<div class="container" id="listMenu">
+		Inbox<br>
+		Sent<br>
+		Drafts<br>
+		Trash<br>
+		
+		
+		</div>
+
+</div>
 	</body>
 </html>
